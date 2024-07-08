@@ -1,0 +1,123 @@
+openapi: 3.0.1
+info:
+  title: Student API
+  description: Student API Specification
+  version: 0.0.1
+servers:
+  - url: /
+paths:
+  /api/v1/student/{studentId}:
+    get:
+      tags:
+        - student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Students'
+    put:
+      tags:
+        - student
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Students'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Students'
+    delete:
+      tags:
+        - student
+      operationId: delete
+      parameters:
+        - name: studentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Students'
+  /api/v1/news:
+    get:
+      tags:
+        - student
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1000
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Students'
+    post:
+      tags:
+        - student
+      operationId: post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Students'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Students'
+components:
+  schemas:
+    Students:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        grade:
+          type: string
+
