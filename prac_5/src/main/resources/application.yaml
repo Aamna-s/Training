@@ -1,0 +1,19 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:student
+    username: AmnaS
+    password: Aamna0907#
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+api:
+  security:
+    ignored: /api/v1/student/**,/api/v1/student,/swagger-ui/**,/v3/api-docs,/v3/api-docs/**,/students,/weather
+weather:
+  api:
+    key: 0aa94ef2271964179a0556929538aa4d
