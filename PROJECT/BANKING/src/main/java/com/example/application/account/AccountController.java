@@ -4,7 +4,10 @@ import com.example.application.Login.Login;
 import com.example.application.Login.LoginResponse;
 import com.example.application.services.AuthenticationService;
 import com.example.application.services.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +27,7 @@ public class AccountController {
     private final AuthenticationService authenticationService;
     private final AccountRepository accountRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
     @Autowired
     public AccountController(AccountService accountService, JwtService jwtService, AuthenticationService authenticationService, AccountRepository accountRepository) {
         this.jwtService = jwtService;
@@ -54,14 +58,28 @@ public class AccountController {
     @PreAuthorize("hasAnyAuthority('admin')")
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody Account account) {
-        Account newAccount = accountService.createAccount(account);
-        return ResponseEntity.ok(newAccount);
+
+
+        try {
+            Account newAccount = accountService.createAccount(account);
+            return ResponseEntity.ok(newAccount);
+        } catch (DataIntegrityViolationException e) {
+
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred. Please try again later.");
+        }
     }
+
 
     @PreAuthorize("hasAnyAuthority('admin')")
     @PatchMapping
-    public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
+    public ResponseEntity<?> updateAccount( @RequestBody Account account) {
         try {
+
             Account updatedAccount = accountService.updateAccount(account);
             return ResponseEntity.ok(updatedAccount);
         } catch (Exception e) {
@@ -92,6 +110,7 @@ public class AccountController {
         if (optionalAccount.isPresent()) {
             Account account = optionalAccount.get();
             loginResponse.setAccount(account);
+            loginResponse.setExpiresIn(Long.valueOf(5));
         }
 
         loginResponse.setExpiresIn(jwtService.getExpirationTime());

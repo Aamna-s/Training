@@ -49,9 +49,10 @@ function CreateAccount() {
       }
     })
     .catch(error => {
-      if (error.response) {
-        // Display backend error message
-        setError(error.response.data.message || 'An error occurred. Please try again.');
+      if (error.response.status === 409) {
+        // Show error message on screen if status code is 400
+        const errorMessage = error.response.data || 'Bad Request. Please check your input.';
+        setError(errorMessage);
       } else {
         // Handle unexpected errors
         setError('An unexpected error occurred.');
@@ -91,6 +92,11 @@ function CreateAccount() {
                       <Link to="/allUsers" className="dropdown-toggle">
                         All Users
                       </Link>
+                    </li>
+                    <li className="dropdown">
+                        <Link to="/viewTransactions" className="dropdown-toggle">
+                            All Transactions
+                        </Link>
                     </li>
                     <li className="dropdown" onClick={Logout}>
                         <Link to="" className="dropdown-toggle">

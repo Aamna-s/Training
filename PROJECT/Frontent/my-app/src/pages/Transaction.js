@@ -36,7 +36,7 @@ function Transaction() {
             }
         })
         .then(response => {
-            const account = response.data;
+           
             return axios.post("http://localhost:8080/api/v1/transactions", {
                 toFromAccountId: toAccount,
                 amount: amount,
@@ -60,7 +60,12 @@ function Transaction() {
                     // Show error message on screen if status code is 400
                     const errorMessage = error.response.data || 'Bad Request. Please check your input.';
                     setError(errorMessage);
-                } else {
+                } 
+                else if(error.response.status === 404){
+                    const errorMessage = error.response.data || 'Account Number does not exsist';
+                    setError(errorMessage);
+                }
+                else {
                     // Handle other HTTP errors
                     setError('An error occurred. Please try again later.');
                 }
@@ -138,7 +143,7 @@ function Transaction() {
                                     <form action="#" className="form-theme" onSubmit={handleSubmit}>
                                         <label>Account Number</label>
                                         <input
-                                            type="text"
+                                            type="number"
                                             value={accountId} // Pre-fill with account ID
                                             name="fromAccount"
                                             className="input"
@@ -157,7 +162,7 @@ function Transaction() {
 
                                         <label>To Account</label>
                                         <input
-                                            type="text"
+                                            type="number"
                                             value={toAccount}
                                             name="toAccount"
                                             placeholder=""

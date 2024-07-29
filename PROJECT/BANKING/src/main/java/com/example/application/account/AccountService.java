@@ -3,7 +3,10 @@ package com.example.application.account;
 import com.example.application.exceptionhandling.TransactionException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +28,8 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     @Autowired
     public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
@@ -81,9 +86,12 @@ public class AccountService implements UserDetailsService {
      */
     public Account createAccount(Account account) {
         Optional<Account> checkAccount=accountRepository.findByUsername(account.getUsername());
+        logger.info("Account found is " + checkAccount);
+
         if(checkAccount.isPresent())
         {
-            throw new TransactionException("Username Already exsists." );
+            System.getLogger("Existing username");
+           throw new DataIntegrityViolationException("Username already exists");
         }
         account.setBankBalance(100);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
@@ -117,8 +125,9 @@ public class AccountService implements UserDetailsService {
         if (account.getAddress() != null && !account.getAddress().isEmpty()) {
             existingAccount.setAddress(account.getAddress());
         }
+        accountRepository.save(existingAccount);
 
-        return accountRepository.save(existingAccount);
+        return existingAccount;
     }
 
     /**
