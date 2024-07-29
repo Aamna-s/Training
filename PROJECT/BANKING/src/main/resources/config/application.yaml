@@ -1,0 +1,44 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8080/admin
+
+
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:file:~/orgs
+    username: test
+    password: test
+    path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+server:
+  tomcat:
+    connection-timeout: 300000
+
+security:
+  jwt:
+    secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+    expiration-time: 3600000  # 1 hour in milliseconds
+#
+#logging:
+#
+#  level:
+#    '[org.springframework.security]': DEBUG
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#
+#
+#
+
+
+

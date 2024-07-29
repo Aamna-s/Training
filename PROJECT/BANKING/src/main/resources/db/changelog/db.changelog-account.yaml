@@ -1,0 +1,111 @@
+databaseChangeLog:
+  - changeSet:
+      id: schema-Account-1
+      author: accounts team
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(50)
+                  constraints:
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(200)
+              - column:
+                  name: roles
+                  type: VARCHAR(200)
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: useremail
+                  type: VARCHAR(255)
+              - column:
+                  name: bank_balance
+                  type: FLOAT
+
+
+  - changeSet:
+      id: schema-Account-2
+      author: accounts team
+      changes:
+        - insert:
+            tableName: accounts
+            columns:
+              - column:
+                  name: name
+                  value: admin
+              - column:
+                  name: account_id
+                  value: '123'
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: '$2a$16$BtT4KPqrTIGdTFxll0XSk.wRffxE3wNUyVVdOF1R.kHzOVur7Vegm'
+              - column:
+                  name: roles
+                  value: admin
+              - column:
+                  name: useremail
+                  value: 'abc@gmail.com'
+              - column:
+                  name: address
+                  value: 'redMath'
+              - column:
+                  name: bank_balance
+                  value: 0
+
+#        - insert:
+#            tableName: users
+#            columns:
+#              - column:
+#                  name: user_id
+#                  value: '456'
+#              - column:
+#                  name: username
+#                  value: reporter
+#              - column:
+#                  name: password
+#                  value: '{noop}abc'
+#              - column:
+#                  name: roles
+#                  value: reporter
+#              - column:
+#                  name: created_at
+#                  value: '2000-01-01T12:00:00'
+#        - insert:
+#            tableName: users
+#            columns:
+#              - column:
+#                  name: user_id
+#                  value: '789'
+#              - column:
+#                  name: username
+#                  value: editor
+#              - column:
+#                  name: password
+#                  value: '{noop}abc'
+#              - column:
+#                  name: roles
+#                  value: editor
+#              - column:
+#                  name: created_at
+#                  value: '2000-01-01T12:00:00'
