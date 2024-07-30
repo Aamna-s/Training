@@ -12,7 +12,8 @@ function EditAccount() {
     const [address, setAddress] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
-
+    const [error, setError] = useState("");
+    
     useEffect(() => {
         const token = Cookies.get('token');
         axios.get(`http://localhost:8080/api/v1/accounts/${id}`, {
@@ -40,8 +41,8 @@ function EditAccount() {
         event.preventDefault();
         const token = Cookies.get('token');
         axios.patch(`http://localhost:8080/api/v1/accounts`, {
-            accountId:id,
-            name,
+            accountId: id,
+            name:name,
             username: userName,
             password,
             useremail: email,
@@ -57,7 +58,13 @@ function EditAccount() {
             navigate('/allUsers');
         })
         .catch((error) => {
-            console.error('Error updating account:', error);
+            if (error.response) {
+                const errorMessage = error.response.data.message || 'Username already exsists';
+                setError(errorMessage);
+            } else {
+                setError('An unexpected error occurred.');
+            }
+            console.error('Error:', error);
         });
     };
 
@@ -124,9 +131,11 @@ function EditAccount() {
                             <div className="tab-content">
                                 <div role="tabpanel" className="tab-pane fade in active" id="tab1">
                                     <form action="#" className="form-theme" onSubmit={handleSubmit}>
+                                        {error && <div className="error-message">{error}</div>}
                                         <label>Account number</label>
                                         <input
                                             type="number"
+                                            id="accountId"
                                             value={id}
                                             name="accountId"
                                             className="input"
@@ -137,6 +146,7 @@ function EditAccount() {
                                             type="text"
                                             value={name}
                                             name="name"
+                                            id="name"
                                             className="input"
                                             onChange={handleChange(setName)}
                                         />

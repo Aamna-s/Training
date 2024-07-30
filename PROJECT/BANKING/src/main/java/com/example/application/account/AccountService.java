@@ -114,7 +114,12 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         if (account.getUsername() != null && !account.getUsername().isEmpty()) {
+
             existingAccount.setUsername(account.getUsername());
+        }
+        if (account.getName() != null && !account.getName().isEmpty()) {
+
+            existingAccount.setName(account.getName());
         }
         if (account.getPassword() != null && !account.getPassword().isEmpty()) {
             existingAccount.setPassword(passwordEncoder.encode(account.getPassword()));

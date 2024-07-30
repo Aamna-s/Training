@@ -136,7 +136,7 @@ function AllUsers() {
                                     <TableCell>{account.roles}</TableCell>
                                     <TableCell>
                                         <Tooltip title="Edit User">
-                                            <IconButton color="warning" onClick={() => handleEditUser(account.accountId)}>
+                                            <IconButton  color="warning" onClick={() => handleEditUser(account.accountId)}>
                                                 <EditIcon />
                                             </IconButton>
                                         </Tooltip>

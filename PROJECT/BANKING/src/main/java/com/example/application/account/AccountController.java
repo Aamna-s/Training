@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,7 @@ public class AccountController {
 
     @PreAuthorize("hasAnyAuthority('admin')")
     @PostMapping
-    public ResponseEntity<?> createAccount(@RequestBody Account account) {
+    public ResponseEntity<?> createAccount (@RequestBody Account account) {
 
 
         try {
@@ -77,13 +78,14 @@ public class AccountController {
 
     @PreAuthorize("hasAnyAuthority('admin')")
     @PatchMapping
-    public ResponseEntity<?> updateAccount( @RequestBody Account account) {
+    public ResponseEntity<?> updateAccount(@RequestBody Account account) {
         try {
-
             Account updatedAccount = accountService.updateAccount(account);
             return ResponseEntity.ok(updatedAccount);
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
 

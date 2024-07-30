@@ -10,28 +10,28 @@ function Footer(){
                            
                         <ul className="owl-carousel carousel-sponsors tooltip-hover" id="carousel-sponsors">
                             <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/1.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/1.png" alt="Image"/></a>
                             </li>
                             <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/2.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/2.png" alt="Image"/></a>
                             </li>
                              <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/3.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/3.png" alt="Image"/></a>
                             </li>
                             <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/4.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/4.png" alt="Image"/></a>
                             </li>
                             <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/5.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/5.png" alt="Image"/></a>
                             </li>
                             <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/6.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/6.png" alt="Image"/></a>
                             </li>
                             <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/7.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/7.png" alt="Image"/></a>
                             </li>
                              <li data-toggle="tooltip" title="" data-original-title="Name Sponsor">
-                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="images/8.png" alt="Image"/></a>
+                                <a href="#" className="tooltip_hover" title="Name Sponsor"><img src="/images/8.png" alt="Image"/></a>
                             </li>                                       
                         </ul> 
                       
