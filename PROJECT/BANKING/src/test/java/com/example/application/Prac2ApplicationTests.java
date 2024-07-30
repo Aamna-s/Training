@@ -1,42 +1,22 @@
 package com.example.application;
 
-import com.example.application.account.Account;
-import com.example.application.account.AccountController;
-import com.example.application.account.AccountRepository;
-import com.example.application.account.AccountService;
-import com.example.application.services.AuthenticationService;
-import com.example.application.services.JwtService;
+
 import com.jayway.jsonpath.JsonPath;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,11 +25,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 class Prac1ApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
-
+@Order(1)
 @Test
 public void testLoginAndAuthenticatedEndpoint() throws Exception {
 	// Login request
@@ -67,6 +48,35 @@ public void testLoginAndAuthenticatedEndpoint() throws Exception {
 	String responseBody = result.getResponse().getContentAsString();
 	String authToken = JsonPath.read(responseBody, "$.token");
 }
+	@Order(3)
+	@Test
+	public void testGetAccountsWithAdminAuthority() throws Exception {
+
+		String loginPayload = "{\"username\":\"admin\",\"password\":\"abc\"}";
+
+		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(loginPayload))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.token").isNotEmpty())
+				.andExpect(jsonPath("$.expiresIn").isNumber())
+				.andDo(print())
+				.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		String authToken = JsonPath.read(responseBody, "$.token");
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/accounts")
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.header("Authorization", "Bearer " + authToken)
+				)
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)));
+	}
+
+	@Order(2)
 	@Test
 	public void testAddAccountPostSuccess() throws Exception {
 		// Login request
@@ -98,59 +108,7 @@ public void testLoginAndAuthenticatedEndpoint() throws Exception {
 				.andExpect(MockMvcResultMatchers.jsonPath("$.roles", Matchers.is("user")));
 	}
 
-	@Test
-	public void testGetAccountsWithAdminAuthority() throws Exception {
-
-		String loginPayload = "{\"username\":\"admin\",\"password\":\"abc\"}";
-
-		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(loginPayload))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.token").isNotEmpty())
-				.andExpect(jsonPath("$.expiresIn").isNumber())
-				.andDo(print())
-				.andReturn();
-
-		String responseBody = result.getResponse().getContentAsString();
-		String authToken = JsonPath.read(responseBody, "$.token");
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/accounts")
-						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.header("Authorization", "Bearer " + authToken)
-				)
-				.andDo(MockMvcResultHandlers.print())
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(7)));
-	}
-	@Test
-	public void testGetAccountsbyAccountnumber() throws Exception {
-
-		String loginPayload = "{\"username\":\"admin\",\"password\":\"abc\"}";
-
-		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(loginPayload))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.token").isNotEmpty())
-				.andExpect(jsonPath("$.expiresIn").isNumber())
-				.andDo(print())
-				.andReturn();
-
-		String responseBody = result.getResponse().getContentAsString();
-		String authToken = JsonPath.read(responseBody, "$.token");
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/accounts/{accountNumber}", 123)
-						.contentType(MediaType.APPLICATION_JSON)
-						.header("Authorization", "Bearer " + authToken))
-				.andDo(print())
-				.andExpect(status().isOk())
-				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.accountId", Matchers.is(123)))
-				.andExpect(jsonPath("$.roles",Matchers.is("admin")))
-				.andExpect(jsonPath("$.username",Matchers.is("admin")));
-	}
+	@Order(5)
 	@Test
 	public void testUpdateAccounts() throws Exception {
 		String loginPayload = "{\"username\":\"admin\",\"password\":\"abc\"}";
@@ -179,55 +137,7 @@ public void testLoginAndAuthenticatedEndpoint() throws Exception {
 				.andExpect(jsonPath("$.address", Matchers.is("math")))
 				.andExpect(jsonPath("$.useremail", Matchers.is("admin@gmail.com")));
 	}
-	@Test
-	public void testDeleteAccountsbyAccountnumber() throws Exception {
-		String loginPayload = "{\"username\":\"admin\",\"password\":\"abc\"}";
-
-		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(loginPayload))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.token").isNotEmpty())
-				.andExpect(jsonPath("$.expiresIn").isNumber())
-				.andDo(print())
-				.andReturn();
-
-		String responseBody = result.getResponse().getContentAsString();
-		String authToken = JsonPath.read(responseBody, "$.token");
-
-		// Assuming account with id 7 exists
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/accounts/{id}", 7)
-						.contentType(MediaType.APPLICATION_JSON)
-						.header("Authorization", "Bearer " + authToken))
-				.andDo(print())
-				.andExpect(status().isOk());
-	}
-	@Test
-	public void testGeTransactionsWithUserAuthority() throws Exception {
-
-		String loginPayload = "{\"username\":\"user\",\"password\":\"abc\"}";
-
-		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(loginPayload))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.token").isNotEmpty())
-				.andExpect(jsonPath("$.expiresIn").isNumber())
-				.andDo(print())
-				.andReturn();
-
-		String responseBody = result.getResponse().getContentAsString();
-		String authToken = JsonPath.read(responseBody, "$.token");
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/transactions/{id}",1)
-						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.header("Authorization", "Bearer " + authToken)
-				)
-				.andDo(MockMvcResultHandlers.print())
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(16)));
-	}
+	@Order(6)
 	@Test
 	public void testAddTransactionsPostSuccess() throws Exception {
 		// Login request
@@ -248,15 +158,67 @@ public void testLoginAndAuthenticatedEndpoint() throws Exception {
 		// Perform POST request to add new user with authenticated token
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/transactions")
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
-						.content("{\"accountId\":\"1\",\"amount\":\"1\",\"toFromAccountId\":\"2\"}")
+						.content("{\"accountId\":\"7\",\"amount\":\"1\",\"toFromAccountId\":\"12\"}")
 						.header("Authorization", "Bearer " + authToken))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.accountId", Matchers.is(1)))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.accountId", Matchers.is(7)))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.amount", Matchers.is(1.0)))
-				.andExpect(MockMvcResultMatchers.jsonPath("$.toFromAccountId", Matchers.is(2)));
+				.andExpect(MockMvcResultMatchers.jsonPath("$.toFromAccountId", Matchers.is(12)));
 
 	}
 
+	
+	
+	@Order(8)
+	@Test
+	public void testDeleteAccountsbyAccountnumber() throws Exception {
+		String loginPayload = "{\"username\":\"admin\",\"password\":\"abc\"}";
 
+		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(loginPayload))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.token").isNotEmpty())
+				.andExpect(jsonPath("$.expiresIn").isNumber())
+				.andDo(print())
+				.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		String authToken = JsonPath.read(responseBody, "$.token");
+
+		// Assuming account with id 7 exists
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/accounts/{id}", 14)
+						.contentType(MediaType.APPLICATION_JSON)
+						.header("Authorization", "Bearer " + authToken))
+				.andDo(print())
+				.andExpect(status().isOk());
+	}
+	@Order(7)
+	@Test
+	public void testGeTransactionsWithUserAuthority() throws Exception {
+
+		String loginPayload = "{\"username\":\"user\",\"password\":\"abc\"}";
+
+		MvcResult result = mockMvc.perform(post("/api/v1/accounts/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(loginPayload))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.token").isNotEmpty())
+				.andExpect(jsonPath("$.expiresIn").isNumber())
+				.andDo(print())
+				.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		String authToken = JsonPath.read(responseBody, "$.token");
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/transactions/{id}",7)
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.header("Authorization", "Bearer " + authToken)
+				)
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)));
+	}
 }

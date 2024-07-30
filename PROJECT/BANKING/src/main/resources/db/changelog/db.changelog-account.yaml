@@ -59,7 +59,7 @@ databaseChangeLog:
                   value: admin
               - column:
                   name: password
-                  value: '$2a$16$BtT4KPqrTIGdTFxll0XSk.wRffxE3wNUyVVdOF1R.kHzOVur7Vegm'
+                  value: '$2a$12$xGgimC.3U.hI6BQiSJWeX.yYqQ9x6X6rhWtmG7xFlyqLTWoDrcL/G'
               - column:
                   name: roles
                   value: admin
