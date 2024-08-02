@@ -7,17 +7,21 @@ function Transaction() {
     const navigate = useNavigate();
     const [amount, setAmount] = useState("");
     const [toAccount, setToAccount] = useState("");
-    const [error, setError] = useState(""); // State for error messages
+    const [error, setError] = useState(""); 
     const token = Cookies.get('token');
     const account = JSON.parse(Cookies.get('account') || '{}');
     const accountId = account.accountId;
-
+    const [amountError, setAmountError] = useState("");
 
     const Logout = () => {
-        Cookies.remove('token'); // Specify the cookie name to remove
+        Cookies.remove('token'); 
         navigate('/');
     };
     const handleAmountChange = (event) => {
+        if (parseFloat(amount) <= 0) {
+            setError("Amount must be a positive number");
+            return;
+        }
         setAmount(event.target.value);
     };
 
@@ -57,7 +61,7 @@ function Transaction() {
         .catch(error => {
             if (error.response) {
                 if (error.response.status === 400) {
-                    // Show error message on screen if status code is 400
+
                     const errorMessage = error.response.data || 'Bad Request. Please check your input.';
                     setError(errorMessage);
                 } 
@@ -66,11 +70,11 @@ function Transaction() {
                     setError(errorMessage);
                 }
                 else {
-                    // Handle other HTTP errors
+                    
                     setError('An error occurred. Please try again later.');
                 }
             } else {
-                // Handle unexpected errors
+                
                 setError('An unexpected error occurred.');
             }
             console.error('Error:', error);
@@ -144,10 +148,10 @@ function Transaction() {
                                         <label>Account Number</label>
                                         <input
                                             type="number"
-                                            value={accountId} // Pre-fill with account ID
+                                            value={accountId} 
                                             name="fromAccount"
                                             className="input"
-                                            disabled // Make the field read-only
+                                            disabled 
                                         />
 
                                         <label>Amount</label>
@@ -175,7 +179,11 @@ function Transaction() {
                                                 {error}
                                             </div>
                                         )}
-
+                                        {amountError && (
+                                        <div style={{ color: 'red', marginTop: '5px' }}>
+                                            {amountError}
+                                        </div>
+                                        )}
                                         <input type="submit" className="btn" value="Save Changes" />
                                     </form>
                                 </div>

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,6 +101,7 @@ public class AccountController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody Login loginAccountDto) throws Exception {
+
         Account authenticatedUser = authenticationService.authenticate(loginAccountDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -109,8 +109,12 @@ public class AccountController {
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(jwtToken);
         Optional<Account> optionalAccount = accountRepository.findByUsername(loginAccountDto.getUsername());
-        if (optionalAccount.isPresent()) {
+        if (optionalAccount.isPresent() ) {
             Account account = optionalAccount.get();
+            if(!account.isActive())
+            {
+                return ResponseEntity.notFound().build();
+            }
             loginResponse.setAccount(account);
             loginResponse.setExpiresIn(Long.valueOf(5));
         }
@@ -119,4 +123,10 @@ public class AccountController {
 
         return ResponseEntity.ok(loginResponse);
     }
+    @GetMapping("/{username}")
+    public Account findByUsername(@PathVariable String username)
+    {
+        return accountService.findByUsername(username);
+    }
+
 }

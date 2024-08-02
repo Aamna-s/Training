@@ -14,18 +14,17 @@ function Login() {
 
     const usernameChangeHandler = (event) => {
         setUsername(event.target.value);
-        setUsernameError(""); // Clear username error when user types
+        setUsernameError(""); 
     };
 
     const passwordChangeHandler = (event) => {
         setPassword(event.target.value);
-        setPasswordError(""); // Clear password error when user types
+        setPasswordError(""); 
     };
 
     const submitHandler = (event) => {
-        event.preventDefault(); // Prevent form from submitting the traditional way
+        event.preventDefault(); 
 
-        // Reset errors
         setUsernameError("");
         setPasswordError("");
         setGeneralError("");
@@ -35,12 +34,12 @@ function Login() {
             password: password
         })
         .then((res) => {
-            // Set the token and account information in cookies
+           
             Cookies.set('token', res.data.token, { expires: 1 });
             Cookies.set('account', JSON.stringify(res.data.account));
 
             const account = res.data.account;
-            // Navigate based on user role
+           
             if (account.roles.includes("admin")) {
                 navigate(`/home`);
             } else {
@@ -50,12 +49,11 @@ function Login() {
         .catch((error) => {
             console.error('Login error:', error);
 
-            // Handle errors
             if (error.response) {
-                // Backend error
+                
                 const errorMessage = 'Password or Username is incorrect';
                 
-                // Display error message under username or password fields
+             
                 if (errorMessage.includes("username")) {
                     setUsernameError(errorMessage);
                 } else if (errorMessage.includes("password")) {
@@ -64,17 +62,17 @@ function Login() {
                     setGeneralError(errorMessage);
                 }
             } else if (error.request) {
-                // No response received
+              
                 setGeneralError('No response received from the server');
             } else {
-                // Error setting up the request
+                
                 setGeneralError('Error in setting up the request');
             }
         });
     };
 
     const goBack = () => {
-        navigate(-1); // Navigate to the previous page
+        navigate(-1); 
     };
 
     return (
@@ -89,9 +87,7 @@ function Login() {
                                     <li role="presentation">
                                         <a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">Login Account</a>
                                     </li>
-                                    <li role="presentation">
-                                        <a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab" onClick={goBack}>Back</a>
-                                    </li>
+                                   
                                 </ul>
                                 <div className="tab-content">
                                     <div role="tabpanel" className="tab-pane fade in active" id="tab1">

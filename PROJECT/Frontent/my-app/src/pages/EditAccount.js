@@ -131,7 +131,6 @@ function EditAccount() {
                             <div className="tab-content">
                                 <div role="tabpanel" className="tab-pane fade in active" id="tab1">
                                     <form action="#" className="form-theme" onSubmit={handleSubmit}>
-                                        {error && <div className="error-message">{error}</div>}
                                         <label>Account number</label>
                                         <input
                                             type="number"
@@ -186,6 +185,11 @@ function EditAccount() {
                                             className="input"
                                             onChange={handleChange(setPassword)}
                                         />
+                                        {error && 
+                                        <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>
+                                                {error}
+                                        </div>}
+
                                         <input type="submit" className="btn" value="Save Changes" />
                                     </form>
                                 </div>

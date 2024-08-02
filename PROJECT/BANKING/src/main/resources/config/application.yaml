@@ -5,18 +5,18 @@ spring:
         url: http://localhost:8080/admin
 
 
-  h2:
-    console:
-      enabled: true
   datasource:
-    url: jdbc:h2:file:~/backend
-    username: test
-    password: test
-    path: /h2-console
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
+    url: jdbc:mysql://localhost:3306/banking
+    username: root
+    password: aamna
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+      hibernate:
+        ddl-auto: update
+      open-in-view: false
+    mysql:
+      console:
+        enabled: true
 
 server:
   tomcat:

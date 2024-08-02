@@ -5,7 +5,7 @@ Scenario('AdminLogin and Delete Account', ({ I }) => {
     I.amOnPage('http://localhost:3000/');
     I.see('Login Account');
     I.fillField('username', 'admin');
-    I.fillField('password', 'ADMIN');
+    I.fillField('password', 'abc');
     I.click('Login');
     I.waitForNavigation({ waitUntil: 'networkidle0' });
 

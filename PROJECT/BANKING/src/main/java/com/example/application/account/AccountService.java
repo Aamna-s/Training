@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Service class for managing {@link Account} entities.
@@ -27,7 +30,7 @@ public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final Random random = new Random();
 
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     @Autowired
@@ -75,9 +78,20 @@ public class AccountService implements UserDetailsService {
         if (size > 1000) {
             size = 1000;
         }
-        return accountRepository.findAll(PageRequest.of(page, size)).getContent();
-    }
+        Page<Account> resultPage = accountRepository.findAllActive(PageRequest.of(page, size));
 
+        // Extract and return the list of accounts
+        return resultPage.getContent();
+    }
+    public Account findByUsername(String username) {
+        Optional<Account> checkAccount=accountRepository.findByUsername(username);
+
+
+        if(checkAccount.isPresent()) {
+            return checkAccount.get();
+        }
+        return null;
+    }
     /**
      * Creates a new account.
      *
@@ -86,14 +100,16 @@ public class AccountService implements UserDetailsService {
      */
     public Account createAccount(Account account) {
         Optional<Account> checkAccount=accountRepository.findByUsername(account.getUsername());
-        logger.info("Account found is " + checkAccount);
+
 
         if(checkAccount.isPresent())
         {
-            System.getLogger("Existing username");
+
            throw new DataIntegrityViolationException("Username already exists");
         }
+        account.setAccountId(generateUniqueAccountId());
         account.setBankBalance(100);
+        account.setActive(true);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return accountRepository.save(account);
     }
@@ -145,6 +161,26 @@ public class AccountService implements UserDetailsService {
         if (!accountRepository.existsById(id)) {
             throw new RuntimeException("Account not found");
         }
-        accountRepository.deleteById(id);
+        Optional<Account> optionalAccount=accountRepository.findById(id);
+        if(optionalAccount.isPresent())
+        {
+            Account account=optionalAccount.get();
+            account.setActive(false);
+            accountRepository.save(account);
+        }
+    }
+    public long generateUniqueAccountId() {
+        long uniqueId;
+        do {
+            uniqueId = generateRandom10DigitNumber();
+        } while (accountRepository.existsById(uniqueId));
+        return uniqueId;
+    }
+
+    private long generateRandom10DigitNumber() {
+        // Generate a random 10-digit number
+        long min = 1000000000L; // Minimum 10-digit number
+        long max = 9999999999L; // Maximum 10-digit number
+        return min + (long) (random.nextDouble() * (max - min));
     }
 }

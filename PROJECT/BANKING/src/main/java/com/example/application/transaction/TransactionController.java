@@ -21,7 +21,7 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
-    @PreAuthorize("hasAnyAuthority('user','admin')")
+    @PreAuthorize("hasAnyAuthority('admin')")
     @GetMapping
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.findAll();

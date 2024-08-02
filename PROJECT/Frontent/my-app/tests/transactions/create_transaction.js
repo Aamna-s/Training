@@ -16,7 +16,7 @@ Scenario('Create a new transaction successfully', async ({ I }) => {
 
     // Fill out the transaction form
     I.fillField('amount', '10'); // Adjust as needed
-    I.fillField('toAccount', '2'); // Adjust as needed
+    I.fillField('toAccount', '12'); // Adjust as needed
     I.click('Save Changes');
 
    

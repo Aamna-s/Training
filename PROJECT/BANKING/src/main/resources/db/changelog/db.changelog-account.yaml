@@ -39,39 +39,42 @@ databaseChangeLog:
               - column:
                   name: bank_balance
                   type: FLOAT
+              - column:
+                  name: active
+                  type: BOOLEAN
 
 
-  - changeSet:
-      id: schema-Account-2
-      author: accounts team
-      changes:
-        - insert:
-            tableName: accounts
-            columns:
-              - column:
-                  name: name
-                  value: admin
-              - column:
-                  name: account_id
-                  value: '123'
-              - column:
-                  name: username
-                  value: admin
-              - column:
-                  name: password
-                  value: '$2a$12$xGgimC.3U.hI6BQiSJWeX.yYqQ9x6X6rhWtmG7xFlyqLTWoDrcL/G'
-              - column:
-                  name: roles
-                  value: admin
-              - column:
-                  name: useremail
-                  value: 'abc@gmail.com'
-              - column:
-                  name: address
-                  value: 'redMath'
-              - column:
-                  name: bank_balance
-                  value: 0
+#  - changeSet:
+#      id: schema-Account-2
+#      author: accounts team
+#      changes:
+#        - insert:
+#            tableName: accounts
+#            columns:
+#              - column:
+#                  name: name
+#                  value: admin
+#              - column:
+#                  name: account_id
+#                  value: '123'
+#              - column:
+#                  name: username
+#                  value: admin
+#              - column:
+#                  name: password
+#                  value: '$2a$12$xGgimC.3U.hI6BQiSJWeX.yYqQ9x6X6rhWtmG7xFlyqLTWoDrcL/G'
+#              - column:
+#                  name: roles
+#                  value: admin
+#              - column:
+#                  name: useremail
+#                  value: 'abc@gmail.com'
+#              - column:
+#                  name: address
+#                  value: 'redMath'
+#              - column:
+#                  name: bank_balance
+#                  value: 0
 
 #        - insert:
 #            tableName: users

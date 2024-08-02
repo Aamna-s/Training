@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { event } from 'codeceptjs';
 
 function CreateAccount() {
   const [name, setName] = useState("");
@@ -15,7 +16,7 @@ function CreateAccount() {
 
   const nameChangeHandler = (event) => setName(event.target.value);
   const roleChangeHandler = (event) => setRole(event.target.value);
-  const usernameChangeHandler = (event) => setUsername(event.target.value);
+  // const usernameChangeHandler = (event) => setUsername(event.target.value);
   const emailChangeHandler = (event) => setEmail(event.target.value);
   const addressChangeHandler = (event) => setAddress(event.target.value);
   const passwordChangeHandler = (event) => setPassword(event.target.value);
@@ -27,6 +28,13 @@ function CreateAccount() {
         Cookies.remove('token'); // Specify the cookie name to remove
         navigate('/');
     };
+    const usernameChangeHandler=(event)=>{
+        axios.get(`http://localhost:8080/api/v1/accounts/${username}`).then(response=>{
+          if(response.data!=null){
+            setError("Username already exsist");
+          }
+        })
+    }
   const submitHandler = (event) => {
     event.preventDefault();
     axios.post("http://localhost:8080/api/v1/accounts", {
@@ -48,17 +56,17 @@ function CreateAccount() {
         navigate(`/allUsers`);
       }
     })
-    .catch(error => {
-      if (error.response.status === 409) {
-        // Show error message on screen if status code is 400
-        const errorMessage = error.response.data || 'Bad Request. Please check your input.';
-        setError(errorMessage);
-      } else {
-        // Handle unexpected errors
-        setError('An unexpected error occurred.');
-      }
-      console.error('Error:', error);
-    });
+    // .catch(error => {
+    //   if (error.response.status === 409) {
+    //     // Show error message on screen if status code is 400
+    //     const errorMessage = error.response.data || 'Bad Request. Please check your input.';
+    //     setError(errorMessage);
+    //   } else {
+    //     // Handle unexpected errors
+    //     setError('An unexpected error occurred.');
+    //   }
+    //   console.error('Error:', error);
+    // });
   };
 
   return (

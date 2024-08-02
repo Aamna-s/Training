@@ -31,7 +31,7 @@ import java.util.List;
 @Entity(name = "accounts")
 public class Account implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(length = 10)
     private Long accountId;
 
     @Column
@@ -54,7 +54,7 @@ public class Account implements UserDetails {
     private String address;
 
     private float bankBalance;
-
+    private boolean active;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(roles));
