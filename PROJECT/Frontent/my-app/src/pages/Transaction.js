@@ -11,39 +11,67 @@ function Transaction() {
     const token = Cookies.get('token');
     const account = JSON.parse(Cookies.get('account') || '{}');
     const accountId = account.accountId;
-    const [amountError, setAmountError] = useState("");
+
 
     const Logout = () => {
         Cookies.remove('token'); 
         navigate('/');
     };
     const handleAmountChange = (event) => {
-        if (parseFloat(amount) <= 0) {
-            setError("Amount must be a positive number");
-            return;
-        }
+        setError('')
         setAmount(event.target.value);
     };
 
     const handleToAccountChange = (event) => {
+        setError('')
         setToAccount(event.target.value);
+      
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setError("");
-
-        axios.get(`http://localhost:8080/api/v1/accounts/${toAccount}`, {
+        setError(""); 
+        if(toAccount.length !==10)
+            {
+                setError("To Account doesn't have valid format")
+                return
+            }
+        if(parseInt(toAccount) === accountId)
+            {
+                setError("To and From account should not be same")
+                return
+            }
+        const amountValue = parseFloat(amount);
+        const bankBalance = parseFloat(account.bankBalance);
+    
+        if (amountValue <= 0) {
+            setError("Amount must be positive");
+            return;
+        }
+    
+        if (amountValue > bankBalance) {
+            setError("Insufficient balance");
+            return;
+        }
+    
+        const ToAccount = parseInt(toAccount, 10);
+    
+        axios.get(`http://localhost:8080/api/v1/accounts/me/${ToAccount}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         })
         .then(response => {
-           
+            if (response.data.active === false) {
+                const errorMessage = `${ToAccount} Account does not exist`;
+                setError(errorMessage);
+                console.error(errorMessage); 
+                return;
+            }
             return axios.post("http://localhost:8080/api/v1/transactions", {
-                toFromAccountId: toAccount,
-                amount: amount,
+                toFromAccountId: ToAccount,
+                amount: amountValue,
                 accountId: accountId
             }, {
                 headers: {
@@ -54,33 +82,26 @@ function Transaction() {
         })
         .then(response => {
             if (response.status === 200) {
-                console.log(response.data);
                 navigate(`/userHistory`);
             }
         })
         .catch(error => {
+            let errorMessage = 'An unexpected error occurred.';
             if (error.response) {
                 if (error.response.status === 400) {
-
-                    const errorMessage = error.response.data || 'Bad Request. Please check your input.';
-                    setError(errorMessage);
-                } 
-                else if(error.response.status === 404){
-                    const errorMessage = error.response.data || 'Account Number does not exsist';
-                    setError(errorMessage);
+                    errorMessage = error.response.data || 'Bad Request. Please check your input.';
+                } else if (error.response.status === 404) {
+                    errorMessage = error.response.data || 'Account Number does not exist';
+                } else {
+                    errorMessage = 'An error occurred. Please try again later.';
                 }
-                else {
-                    
-                    setError('An error occurred. Please try again later.');
-                }
-            } else {
-                
-                setError('An unexpected error occurred.');
             }
-            console.error('Error:', error);
+            setError(errorMessage);
+            console.error('Error:', errorMessage); // Log the error message here
         });
     };
-
+    
+    
     return (
         <>
             <nav id="menu">
@@ -148,10 +169,10 @@ function Transaction() {
                                         <label>Account Number</label>
                                         <input
                                             type="number"
-                                            value={accountId} 
+                                            value={accountId} // Pre-fill with account ID
                                             name="fromAccount"
                                             className="input"
-                                            disabled 
+                                            disabled // Make the field read-only
                                         />
 
                                         <label>Amount</label>
@@ -179,11 +200,7 @@ function Transaction() {
                                                 {error}
                                             </div>
                                         )}
-                                        {amountError && (
-                                        <div style={{ color: 'red', marginTop: '5px' }}>
-                                            {amountError}
-                                        </div>
-                                        )}
+
                                         <input type="submit" className="btn" value="Save Changes" />
                                     </form>
                                 </div>

@@ -5,7 +5,7 @@ Scenario('AdminLogin and Edit Account', ({ I }) => {
     I.amOnPage('http://localhost:3000/');
     I.see('Login Account');
     I.fillField('username', 'admin');
-    I.fillField('password', 'abc');
+    I.fillField('password', 'Abc123');
     I.click('Login');
     I.waitForNavigation({ waitUntil: 'networkidle0' });
 
@@ -17,7 +17,7 @@ Scenario('AdminLogin and Edit Account', ({ I }) => {
     // Step 3: Verify Edit Account page is opened
     I.waitForVisible('input[name="name"]'); // Wait for the field to be visible
     I.see('Edit Account');
-    I.amOnPage('http://localhost:3000/editAccount/12');
+    I.amOnPage('http://localhost:3000/editAccount/1234567889');
 
     // Step 4: Edit the account details I.fillField({ id: 'name' }, 'Test');
     I.fillField({ id: 'name' }, 'Updated Name');

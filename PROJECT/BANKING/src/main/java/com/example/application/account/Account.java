@@ -2,8 +2,7 @@ package com.example.application.account;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -31,30 +30,42 @@ import java.util.List;
 @Entity(name = "accounts")
 public class Account implements UserDetails {
     @Id
-    @Column(length = 10)
+    @Column
     private Long accountId;
 
     @Column
     private String name;
 
-    @Column(length = 50)
+    @Column
     private String username;
 
-    @Column(length = 200)
+    @Column
     private String password;
 
-    @Column(length = 200)
+    @Column
     private String roles;
 
     @Email
-    @Column(length = 255)
+    @Column
     private String useremail;
 
-    @Column(length = 255)
+    @Column
     private String address;
 
     private float bankBalance;
     private boolean active;
+
+    public Account(Account other) {
+        this.accountId = other.accountId;
+        this.username = other.username;
+        this.name = other.name;
+        this.useremail = other.useremail;
+        this.address = other.address;
+        this.password = other.password;
+        this.roles = other.roles;
+        this.active=other.active;
+        this.bankBalance=other.bankBalance;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(roles));

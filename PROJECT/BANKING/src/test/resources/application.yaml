@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: bank-backend
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: AmnaS
+    password: Aamna0907#
+  jpa:
+    hibernate:
+      ddl-auto: none
+#  liquibase:
+#    change-log: classpath:/db.changelog/db.changelog-master.yaml

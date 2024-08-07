@@ -129,6 +129,27 @@
 /* Standar Styles --------------------------------------------------------*/
 /* General Tab Content Styling */
 /* General Tab Content Styling */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input {
+    padding-right: 2.5rem; /* Space for the eye icon */
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0.5rem; /* Adjust to align the icon */
+    top: 30%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #888; /* Adjust as needed */
+}
+
 .tab-content {
     padding: 30px;
     background-color: #ffffff;
@@ -159,6 +180,20 @@
     color: #101111; /* Color for strong text */
 }
 /* Custom Container for Profile Information */
+/* Ensure you have a CSS file or use a <style> tag */
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-nav {
+    margin: 0;
+}
+
+.navbar-nav li {
+    margin-right: 15px; /* Adjust spacing between menu items */
+}
 
 
 /* Responsive Adjustments */

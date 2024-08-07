@@ -13,7 +13,7 @@ function EditAccount() {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [error, setError] = useState("");
-    
+    const token = Cookies.get('token');
     useEffect(() => {
         const token = Cookies.get('token');
         axios.get(`http://localhost:8080/api/v1/accounts/${id}`, {
@@ -36,10 +36,32 @@ function EditAccount() {
     const handleChange = (setter) => (event) => {
         setter(event.target.value);
     };
-
+    const usernameChangeHandler = async (event) => {
+        const usernameInput = event.target.value;
+        setUserName(usernameInput);
+    
+        try {
+          const response = await axios.get(`http://localhost:8080/api/v1/accounts/${usernameInput}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          if (response.data != null) {
+            setError("Username already exists");
+          } else {
+            setError("");
+          }
+        } catch (error) {
+          if (error.response && error.response.status !== 404) {
+            setError("An error occurred while checking username.");
+          } 
+        }
+      };
+    
     const handleSubmit = (event) => {
         event.preventDefault();
-        const token = Cookies.get('token');
+       
         axios.patch(`http://localhost:8080/api/v1/accounts`, {
             accountId: id,
             name:name,
@@ -131,6 +153,7 @@ function EditAccount() {
                             <div className="tab-content">
                                 <div role="tabpanel" className="tab-pane fade in active" id="tab1">
                                     <form action="#" className="form-theme" onSubmit={handleSubmit}>
+                                       
                                         <label>Account number</label>
                                         <input
                                             type="number"
@@ -156,7 +179,7 @@ function EditAccount() {
                                             name="userName"
                                             placeholder="Federick"
                                             className="input"
-                                            onChange={handleChange(setUserName)}
+                                            onChange={usernameChangeHandler}
                                         />
                                         <label>Email</label>
                                         <input
@@ -185,12 +208,12 @@ function EditAccount() {
                                             className="input"
                                             onChange={handleChange(setPassword)}
                                         />
-                                        {error && 
-                                        <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>
-                                                {error}
-                                        </div>}
-
                                         <input type="submit" className="btn" value="Save Changes" />
+                                        {error && (
+                        <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>
+                          {error}
+                        </div>
+                      )}
                                     </form>
                                 </div>
                             </div>

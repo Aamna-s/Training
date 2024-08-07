@@ -3,6 +3,7 @@ package com.example.application.transaction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -15,7 +16,10 @@ public interface TransactionRepository extends JpaRepository<Transaction,Long> {
 
     @Query(value = "SELECT b.* FROM Transaction b JOIN accounts a ON a.account_Id = b.account_Id WHERE b.account_Id = ?1", nativeQuery = true)
     Optional<List<Transaction>> findHistory(Long accountId);
-
+    @Query(value = "SELECT b.* FROM banking.transaction b " +
+            "WHERE b.account_Id = :accountId OR b.to_from_account_id = :accountId",
+            nativeQuery = true)
+    List<Transaction> getThroughId(@Param("accountId") Long id);
 
 
 }

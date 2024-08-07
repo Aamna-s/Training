@@ -24,6 +24,7 @@ databaseChangeLog:
                   type: VARCHAR(50)
                   constraints:
                     unique: true
+
               - column:
                   name: password
                   type: VARCHAR(200)
@@ -44,38 +45,100 @@ databaseChangeLog:
                   type: BOOLEAN
 
 
-#  - changeSet:
-#      id: schema-Account-2
-#      author: accounts team
-#      changes:
-#        - insert:
-#            tableName: accounts
-#            columns:
-#              - column:
-#                  name: name
-#                  value: admin
-#              - column:
-#                  name: account_id
-#                  value: '123'
-#              - column:
-#                  name: username
-#                  value: admin
-#              - column:
-#                  name: password
-#                  value: '$2a$12$xGgimC.3U.hI6BQiSJWeX.yYqQ9x6X6rhWtmG7xFlyqLTWoDrcL/G'
-#              - column:
-#                  name: roles
-#                  value: admin
-#              - column:
-#                  name: useremail
-#                  value: 'abc@gmail.com'
-#              - column:
-#                  name: address
-#                  value: 'redMath'
-#              - column:
-#                  name: bank_balance
-#                  value: 0
-
+  - changeSet:
+      id: schema-Account-2
+      author: accounts team
+      changes:
+        - insert:
+            tableName: accounts
+            columns:
+              - column:
+                  name: name
+                  value: admin
+              - column:
+                  name: account_id
+                  value: 1111111111
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: '$2a$12$aMu91.oxvjWttjP85jvQwO1SRV5KwNox6HjPFeUuf4uQ.K.C4imnC'
+              - column:
+                  name: roles
+                  value: admin
+              - column:
+                  name: useremail
+                  value: 'abc@gmail.com'
+              - column:
+                  name: address
+                  value: 'redMath'
+              - column:
+                  name: bank_balance
+                  value: 0
+              - column:
+                  name: active
+                  value: 1
+        - insert:
+              tableName: accounts
+              columns:
+                - column:
+                    name: name
+                    value: TEST4
+                - column:
+                    name: account_id
+                    value: 1234567888
+                - column:
+                    name: username
+                    value: test4
+                - column:
+                    name: password
+                    value: '$2a$12$aMu91.oxvjWttjP85jvQwO1SRV5KwNox6HjPFeUuf4uQ.K.C4imnC'
+                - column:
+                    name: roles
+                    value: user
+                - column:
+                    name: useremail
+                    value: 'abc@gmail.com'
+                - column:
+                    name: address
+                    value: 'redMath'
+                - column:
+                    name: bank_balance
+                    value: 100
+                - column:
+                    name: active
+                    value: 1
+        - insert:
+            tableName: accounts
+            columns:
+              - column:
+                  name: name
+                  value: user4
+              - column:
+                  name: account_id
+                  value: 1234567889
+              - column:
+                  name: username
+                  value: user
+              - column:
+                  name: password
+                  value: '$2a$12$aMu91.oxvjWttjP85jvQwO1SRV5KwNox6HjPFeUuf4uQ.K.C4imnC'
+              - column:
+                  name: roles
+                  value: user
+              - column:
+                  name: useremail
+                  value: 'abc@gmail.com'
+              - column:
+                  name: address
+                  value: 'redMath'
+              - column:
+                  name: bank_balance
+                  value: 100
+              - column:
+                  name: active
+                  value: 1
 #        - insert:
 #            tableName: users
 #            columns:

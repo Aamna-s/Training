@@ -10,20 +10,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginResponse {
-
-    /**
-     * JWT token for authenticated user.
-     */
+    private  Account account;
     private String token;
-
-    /**
-     * Expiration time of the JWT token in seconds.
-     */
     private Long expiresIn;
 
-    /**
-     * The account details of the authenticated user.
-     */
-    private Account account;
 
+
+    public Account getAccount() {
+        return account != null ? new Account(account) : null; // Assuming Account has a copy constructor
+    }
+    public void setAccount(Account account) {
+        this.account = account != null ? new Account(account) : null; // Assuming Account has a copy constructor
+    }
 }
+

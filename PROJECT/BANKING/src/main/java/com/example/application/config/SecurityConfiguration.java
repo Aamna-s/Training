@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Objects;
+
 /**
  * Security configuration class that sets up the security filter chain.
  */
@@ -31,7 +33,8 @@ public class SecurityConfiguration {
      */
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        // Create a defensive copy or ensure immutability
+        this.jwtAuthenticationFilter = Objects.requireNonNull(jwtAuthenticationFilter, "Account service cannot be null"); // Ensure this is safe
     }
 
     /**

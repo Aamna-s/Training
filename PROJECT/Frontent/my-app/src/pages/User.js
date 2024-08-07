@@ -4,7 +4,7 @@ function User(){
     const navigate = useNavigate();
 
     const Logout = () => {
-        Cookies.remove('token'); 
+        Cookies.remove('token'); // Specify the cookie name to remove
         navigate('/');
     };
     return(<>

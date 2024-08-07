@@ -7,7 +7,7 @@ Scenario('Admin Login and Add Account', ({ I }) => {
 
   // Fill in the login form and submit
   I.fillField('username', 'admin');
-  I.fillField('password', 'abc');
+  I.fillField('password', 'Abc123');
   I.click('Login');
 
   // Wait for navigation to complete
@@ -26,7 +26,7 @@ Scenario('Admin Login and Add Account', ({ I }) => {
 
   // Fill in the new account form
   I.fillField('username', 'amna');
-  I.fillField('password', 'abc');
+  I.fillField('password', 'Abc123');
   I.fillField('role', 'user');
   I.fillField('name', 'AMNA');
   

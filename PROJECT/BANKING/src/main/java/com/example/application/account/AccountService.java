@@ -1,10 +1,7 @@
 package com.example.application.account;
 
-import com.example.application.exceptionhandling.TransactionException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -16,10 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
 
 /**
  * Service class for managing {@link Account} entities.
@@ -30,9 +26,8 @@ public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Random random = new Random();
+    private final SecureRandom secureRandom = new SecureRandom(); // Use SecureRandom instead of Random
 
-    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     @Autowired
     public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
@@ -41,10 +36,10 @@ public class AccountService implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String name) {
         Optional<Account> account = accountRepository.findByUsername(name);
         if (account.isEmpty()) {
-            log.warn("Invalid user: {}", name.replace('\n', ' '));
+
             throw new UsernameNotFoundException("Invalid username or password");
         }
         return new org.springframework.security.core.userdetails.User(
@@ -83,15 +78,12 @@ public class AccountService implements UserDetailsService {
         // Extract and return the list of accounts
         return resultPage.getContent();
     }
+
     public Account findByUsername(String username) {
-        Optional<Account> checkAccount=accountRepository.findByUsername(username);
-
-
-        if(checkAccount.isPresent()) {
-            return checkAccount.get();
-        }
-        return null;
+        Optional<Account> checkAccount = accountRepository.findByUsername(username);
+        return checkAccount.orElse(null);
     }
+
     /**
      * Creates a new account.
      *
@@ -99,13 +91,9 @@ public class AccountService implements UserDetailsService {
      * @return the created account
      */
     public Account createAccount(Account account) {
-        Optional<Account> checkAccount=accountRepository.findByUsername(account.getUsername());
-
-
-        if(checkAccount.isPresent())
-        {
-
-           throw new DataIntegrityViolationException("Username already exists");
+        Optional<Account> checkAccount = accountRepository.findByUsername(account.getUsername());
+        if (checkAccount.isPresent()) {
+            throw new DataIntegrityViolationException("Username already exists");
         }
         account.setAccountId(generateUniqueAccountId());
         account.setBankBalance(100);
@@ -130,11 +118,9 @@ public class AccountService implements UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         if (account.getUsername() != null && !account.getUsername().isEmpty()) {
-
             existingAccount.setUsername(account.getUsername());
         }
         if (account.getName() != null && !account.getName().isEmpty()) {
-
             existingAccount.setName(account.getName());
         }
         if (account.getPassword() != null && !account.getPassword().isEmpty()) {
@@ -161,14 +147,14 @@ public class AccountService implements UserDetailsService {
         if (!accountRepository.existsById(id)) {
             throw new RuntimeException("Account not found");
         }
-        Optional<Account> optionalAccount=accountRepository.findById(id);
-        if(optionalAccount.isPresent())
-        {
-            Account account=optionalAccount.get();
+        Optional<Account> optionalAccount = accountRepository.findById(id);
+        if (optionalAccount.isPresent()) {
+            Account account = optionalAccount.get();
             account.setActive(false);
             accountRepository.save(account);
         }
     }
+
     public long generateUniqueAccountId() {
         long uniqueId;
         do {
@@ -181,6 +167,6 @@ public class AccountService implements UserDetailsService {
         // Generate a random 10-digit number
         long min = 1000000000L; // Minimum 10-digit number
         long max = 9999999999L; // Maximum 10-digit number
-        return min + (long) (random.nextDouble() * (max - min));
+        return min + (long) (secureRandom.nextDouble() * (max - min));
     }
 }

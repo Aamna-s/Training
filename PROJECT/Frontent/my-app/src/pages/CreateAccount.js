@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { event } from 'codeceptjs';
 
 function CreateAccount() {
   const [name, setName] = useState("");
@@ -13,30 +12,79 @@ function CreateAccount() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Initialize error state
 
-
   const nameChangeHandler = (event) => setName(event.target.value);
   const roleChangeHandler = (event) => setRole(event.target.value);
-  // const usernameChangeHandler = (event) => setUsername(event.target.value);
   const emailChangeHandler = (event) => setEmail(event.target.value);
   const addressChangeHandler = (event) => setAddress(event.target.value);
-  const passwordChangeHandler = (event) => setPassword(event.target.value);
+  const passwordChangeHandler = (event) => { 
+    setError('');
+    setPassword(event.target.value);}
 
   const token = Cookies.get('token');
   const navigate = useNavigate();
 
-    const Logout = () => {
-        Cookies.remove('token'); // Specify the cookie name to remove
-        navigate('/');
-    };
-    const usernameChangeHandler=(event)=>{
-        axios.get(`http://localhost:8080/api/v1/accounts/${username}`).then(response=>{
-          if(response.data!=null){
-            setError("Username already exsist");
-          }
-        })
+  const Logout = () => {
+    Cookies.remove('token'); // Specify the cookie name to remove
+    navigate('/');
+  };
+
+  const usernameChangeHandler = async (event) => {
+    const usernameInput = event.target.value;
+    setError('')
+    setUsername(usernameInput);
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/v1/accounts/${usernameInput}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.data != null) {
+        setError("Username already exists");
+      } else {
+        setError("");
+      }
+    } catch (error) {
+      if (error.response && error.response.status !== 404) {
+        setError("An error occurred while checking username.");
+      } else {
+        setError("");
+      }
     }
+  };
+
+  // Password validation function
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return passwordRegex.test(password);
+  };
+
   const submitHandler = (event) => {
     event.preventDefault();
+
+    if (!username) {
+      setError("Username cannot be null");
+      return;
+    }
+    if (!password) {
+      setError("Password cannot be null");
+      return;
+    }
+    if (!validatePassword(password)) {
+      setError("Password must contain at least one uppercase letter, one lowercase letter, one digit, and be at least 6 characters long.");
+      return;
+    }
+    if (!role) {
+      setError("Role cannot be null");
+      return;
+    }
+    if (!name) {
+      setError("Name cannot be null");
+      return;
+    }
+
     axios.post("http://localhost:8080/api/v1/accounts", {
       name,
       username,
@@ -52,21 +100,14 @@ function CreateAccount() {
     })
     .then(response => {
       if (response.status === 200) {
-        console.log(response.data);
         navigate(`/allUsers`);
       }
     })
-    // .catch(error => {
-    //   if (error.response.status === 409) {
-    //     // Show error message on screen if status code is 400
-    //     const errorMessage = error.response.data || 'Bad Request. Please check your input.';
-    //     setError(errorMessage);
-    //   } else {
-    //     // Handle unexpected errors
-    //     setError('An unexpected error occurred.');
-    //   }
-    //   console.error('Error:', error);
-    // });
+    .catch(error => {
+      if (!error && error.response.status === 403) {
+        setError('An unexpected error occurred.');
+      }
+    });
   };
 
   return (
@@ -95,21 +136,20 @@ function CreateAccount() {
                         Home
                       </Link>
                     </li>
-                    
                     <li className="dropdown">
                       <Link to="/allUsers" className="dropdown-toggle">
                         All Users
                       </Link>
                     </li>
                     <li className="dropdown">
-                        <Link to="/viewTransactions" className="dropdown-toggle">
-                            All Transactions
-                        </Link>
+                      <Link to="/viewTransactions" className="dropdown-toggle">
+                        All Transactions
+                      </Link>
                     </li>
                     <li className="dropdown" onClick={Logout}>
-                        <Link to="" className="dropdown-toggle">
-                            Logout
-                        </Link>
+                      <Link to="" className="dropdown-toggle">
+                        Logout
+                      </Link>
                     </li>
                   </ul>
                 </div>

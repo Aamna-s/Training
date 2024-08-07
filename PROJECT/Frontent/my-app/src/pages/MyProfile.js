@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {  Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
 function MyProfile() {
-    const accountId = JSON.parse(Cookies.get('account') || '{}').accountId;
-    
     const [account, setAccount] = useState(null);
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -14,23 +12,34 @@ function MyProfile() {
         Cookies.remove('token'); // Specify the cookie name to remove
         navigate('/');
     };
+
     useEffect(() => {
         const fetchAccount = async () => {
             try {
                 const token = Cookies.get('token');
-                const response = await axios.get(`http://localhost:8080/api/v1/accounts/${accountId}`, {
+                 const accountId = JSON.parse(Cookies.get('account') || '{}').accountId;
+                
+                const response = await axios.get(`http://localhost:8080/api/v1/accounts/me/${accountId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
-                });
-                setAccount(response.data);
+                }
+            );
+            setAccount(response.data);
+            console.log(response.data)  
+                
             } catch (err) {
-                setError("Error fetching account details");
+                if (err.response && err.response.status === 401) {
+                    // Handle unauthorized access
+                    setError("Session expired. Please log in again.");
+                } else {
+                    setError("Error fetching account details");
+                }
                 console.error(err);
             }
         };
         fetchAccount();
-    }, [accountId]);
+    }, []);
 
     if (error) {
         return <div>{error}</div>;
@@ -76,17 +85,16 @@ function MyProfile() {
                                                 View History
                                             </Link>
                                         </li>
-                                        
                                         <li className="dropdown">
                                             <Link to="/viewAccount" className="dropdown-toggle">
                                                 View Account
                                             </Link>
                                         </li>
                                         <li className="dropdown" onClick={Logout}>
-                                        <Link to="" className="dropdown-toggle">
-                                            Logout
-                                        </Link>
-                                    </li>
+                                            <Link to="" className="dropdown-toggle">
+                                                Logout
+                                            </Link>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -105,9 +113,9 @@ function MyProfile() {
                                 <div className="tab-content">
                                     <div role="tabpanel" className="tab-pane fade in active" id="tab1">
                                         <h3>Account Details</h3>
-                                        <p><strong>Full Name:</strong> {account.accountId}</p>
+                                        <p><strong>Account ID:</strong> {account.accountId}</p>
                                         <p><strong>Full Name:</strong> {account.name}</p>
-                                        <p><strong>UserName:</strong> {account.username}</p>
+                                        <p><strong>Username:</strong> {account.username}</p>
                                         <p><strong>Email:</strong> {account.useremail}</p>
                                         <p><strong>Address:</strong> {account.address}</p>
                                         <p><strong>Bank Balance:</strong> {account.bankBalance}</p>

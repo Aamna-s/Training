@@ -94,6 +94,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -132,7 +138,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.28</version> <!-- Replace with the version you want to use -->
+			<version>8.0.28</version>
 		</dependency>
 	</dependencies>
 
@@ -146,7 +152,9 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
 		</dependencies>
+
 	</dependencyManagement>
 
 	<build>
@@ -170,7 +178,7 @@
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>	3.4.0</version>
 				<configuration>
-					<configLocation>google_checks.xml</configLocation>
+					<configLocation>checkStyle.xml</configLocation>
 				</configuration>
 				<executions>
 					<execution>

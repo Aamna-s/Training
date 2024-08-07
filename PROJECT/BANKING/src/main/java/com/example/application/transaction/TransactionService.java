@@ -62,10 +62,6 @@ public class TransactionService {
             throw new TransactionException("Unauthorized Transaction");
         }
 
-        // Check if fromAccount has sufficient balance
-        if (fromAccount.getBankBalance() < amount) {
-            throw new TransactionException("Insufficient balance in the account " + fromAccountId + ".");
-        }
 
         // Debit from fromAccount
         fromAccount.setBankBalance(fromAccount.getBankBalance() - amount);
@@ -91,5 +87,9 @@ public class TransactionService {
 
         return transaction;
     }
+     public List<Transaction> getThroughId(Long id){
+        List<Transaction> list= transactionRepository.getThroughId(id);
+           return list;
 
+     }
 }

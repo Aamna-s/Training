@@ -1,3 +1,4 @@
+
 package com.example.application.config;
 
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,5 @@ public class SwaggerConfig {
                 .addSecurityItem(new SecurityRequirement().addList("JavaInUseSecurityScheme"))
                 .components(new Components().addSecuritySchemes("JavaInUseSecurityScheme", new SecurityScheme()
                         .name("JavaInUseSecurityScheme").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
-
     }
 }
