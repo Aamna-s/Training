@@ -8,14 +8,11 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction,Long> {
-//    Optional<List<Balance>> findByAccountId(Long accountId);
 
-//    @Query(value = "SELECT b.* FROM Transaction b JOIN accounts a ON a.account_Id = b.account_Id WHERE b.account_Id = ?1", nativeQuery = true)
-//    Optional<List<Transaction>> findHistory(Long accountId);
     @Query(value = "SELECT b.* FROM banking.transaction b " +
             "WHERE b.account_Id = :accountId ",
             nativeQuery = true)

@@ -5,7 +5,7 @@ import com.example.application.account.Account;
 import com.example.application.account.AccountRepository;
 import com.example.application.exceptionhandling.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
