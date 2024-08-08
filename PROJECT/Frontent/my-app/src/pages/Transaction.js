@@ -56,7 +56,7 @@ function Transaction() {
     
         const ToAccount = parseInt(toAccount, 10);
     
-        axios.get(`http://localhost:8080/api/v1/accounts/me/${ToAccount}`, {
+        axios.get(`http://localhost:8080/api/v1/accounts/Id/${ToAccount}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`

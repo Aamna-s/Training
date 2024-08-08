@@ -23,22 +23,14 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
     @PreAuthorize("hasAnyAuthority('admin')")
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.findAll();
         return ResponseEntity.ok(transactions);
     }
+
     @PreAuthorize("hasAnyAuthority('user')")
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<List<Transaction>>> getTransactionById() {
-        Optional<List<Transaction>> transactions = transactionService.findByAccount();
-        if (transactions.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(transactions);
-    }
-    @PreAuthorize("hasAnyAuthority('user')")
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> createTransaction(@RequestBody Transaction request) {
         if (request.getToFromAccountId().equals(request.getAccountId())) {
             return ResponseEntity.badRequest().body("To account and from account cannot be the same");
@@ -46,8 +38,8 @@ public class TransactionController {
         Transaction success = transactionService.save(request);
         return ResponseEntity.ok(success);
     }
-    @PreAuthorize("hasAnyAuthority('admin')")
-    @GetMapping("get/{id}")
+    @PreAuthorize("hasAnyAuthority('admin','user')")
+    @GetMapping("/Id/{id}")
     public ResponseEntity<List<Transaction>> GetTransactionById(@PathVariable("id") Long id) {
        List<Transaction> list=transactionService.getThroughId(id);
         return ResponseEntity.ok(list);

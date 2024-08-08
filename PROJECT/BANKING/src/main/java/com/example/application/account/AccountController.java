@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyAuthority('admin','user')")
-    @GetMapping("/me/{id}")
+    @GetMapping("Id/{id}")
     public ResponseEntity<Account> findAccount(@PathVariable Long id) {
         Optional<Account> getAccount = accountService.findById(id);
         return getAccount.map(ResponseEntity::ok)
@@ -58,14 +58,14 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyAuthority('admin')")
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<Account>> get(@RequestParam(name = "page", defaultValue = "0") Integer page,
                                              @RequestParam(name = "size", defaultValue = "1000") Integer size) {
         return ResponseEntity.ok(accountService.findAll(page, size));
     }
 
     @PreAuthorize("hasAnyAuthority('admin')")
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<?> createAccount(@RequestBody Account account) {
         try {
             Account newAccount = accountService.createAccount(account);
@@ -78,7 +78,7 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyAuthority('admin')")
-    @PatchMapping
+    @PatchMapping("")
     public ResponseEntity<?> updateAccount(@RequestBody Account account) {
         try {
             Account updatedAccount = accountService.updateAccount(account);
@@ -109,7 +109,7 @@ public class AccountController {
             String jwtToken = jwtService.generateToken(authenticatedUser);
 
             LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setToken(jwtToken);
+
 
             Optional<Account> optionalAccount = accountRepository.findByUsername(loginAccountDto.getUsername());
 
@@ -119,13 +119,17 @@ public class AccountController {
                     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Account is not active");
                 }
                 loginResponse.setAccount(account);
+
                 loginResponse.setExpiresIn(jwtService.getExpirationTime());
             } else {
                 loginResponse.setExpiresIn(jwtService.getExpirationTime());
             }
-          //  HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization","Bearer "+jwtToken);
 
-            return ResponseEntity.ok(loginResponse);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(loginResponse);
         } catch (UsernameNotFoundException e) {
             // Handle invalid username or password
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
@@ -136,7 +140,7 @@ public class AccountController {
     }
 
 
-    @GetMapping("/{username}")
+    @GetMapping("/Username/{username}")
     public ResponseEntity<Account> findByUsername(@PathVariable String username) {
         Account account = accountService.findByUsername(username);
         return account != null ? ResponseEntity.ok(account) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();

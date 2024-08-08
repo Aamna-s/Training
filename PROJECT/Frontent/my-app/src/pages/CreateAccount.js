@@ -34,7 +34,7 @@ function CreateAccount() {
     setUsername(usernameInput);
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/accounts/${usernameInput}`, {
+      const response = await axios.get(`http://localhost:8080/api/v1/accounts/Username/${usernameInput}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

@@ -28,16 +28,7 @@ public class TransactionService {
         return transactionRepository.findAll();
     }
 
-    public Optional<List<Transaction>> findByAccount() {
-        Optional<List<Transaction>> transactionList = Optional.empty();
-        Optional<Account> optionalAccount = accountRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        if (optionalAccount.isPresent()) {
-            Account account = optionalAccount.get();
-            transactionList = transactionRepository.findHistory(account.getAccountId());
 
-        }
-        return transactionList;
-    }
 
     public Transaction save(Transaction transaction) {
         Long fromAccountId = transaction.getAccountId();

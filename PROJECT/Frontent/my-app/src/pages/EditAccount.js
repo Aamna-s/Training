@@ -16,7 +16,7 @@ function EditAccount() {
     const token = Cookies.get('token');
     useEffect(() => {
         const token = Cookies.get('token');
-        axios.get(`http://localhost:8080/api/v1/accounts/${id}`, {
+        axios.get(`http://localhost:8080/api/v1/accounts/Id/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -41,7 +41,7 @@ function EditAccount() {
         setUserName(usernameInput);
     
         try {
-          const response = await axios.get(`http://localhost:8080/api/v1/accounts/${usernameInput}`, {
+          const response = await axios.get(`http://localhost:8080/api/v1/accounts/Username/${usernameInput}`, {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`

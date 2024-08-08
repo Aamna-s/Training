@@ -19,7 +19,7 @@ function MyProfile() {
                 const token = Cookies.get('token');
                  const accountId = JSON.parse(Cookies.get('account') || '{}').accountId;
                 
-                const response = await axios.get(`http://localhost:8080/api/v1/accounts/me/${accountId}`, {
+                const response = await axios.get(`http://localhost:8080/api/v1/accounts/Id/${accountId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

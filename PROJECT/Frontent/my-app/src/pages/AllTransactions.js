@@ -45,7 +45,7 @@ function AllTransactions() {
     const fetchFilteredTransactions =(searchValue) => {
         console.log(token)
         if (searchValue !== '') {
-            axios.get(`http://localhost:8080/api/v1/transactions/get/${searchValue}`, {
+            axios.get(`http://localhost:8080/api/v1/transactions/Id/${searchValue}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`

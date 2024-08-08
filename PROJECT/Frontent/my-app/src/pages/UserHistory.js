@@ -18,7 +18,7 @@ function UserHistory() {
     };
     useEffect(() => {
         setLoading(true); // Set loading to true when starting to fetch data
-        axios.get(`http://localhost:8080/api/v1/transactions/${id}`, {
+        axios.get(`http://localhost:8080/api/v1/transactions/Id/${id}`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`

@@ -32,25 +32,34 @@ function Login() {
     const submitHandler = (event) => {
         event.preventDefault(); 
         setIsLoading(true); // Set loading state
-
+    
         setUsernameError("");
         setPasswordError("");
         setGeneralError("");
-
+    
         axios.post("http://localhost:8080/api/v1/accounts/login", {
             username: username,
             password: password
         })
         .then((res) => {
-            Cookies.set('token', res.data.token);
-            Cookies.set('account', JSON.stringify(res.data.account));
-
-            const account = res.data.account;
-            
-            if (account?.roles?.includes("admin")) {
-                navigate(`/home`);
+            // Ensure 'authorization' header is correctly set by your server
+            const token = res.headers['authorization']?.split(' ')[1];
+            if (token) {
+                Cookies.set('token', token);
             } else {
-                navigate(`/userDashboard`);
+                setGeneralError('Authentication token not received.');
+            }
+    
+            // Set account data in cookies
+            Cookies.set('account', JSON.stringify(res.data.account)); // Store as JSON string
+            
+            const role = res.data.account.roles;
+            
+            // Navigate based on user role
+            if (role?.includes("admin")) {
+                navigate('/home');
+            } else {
+                navigate('/userDashboard');
             }
         })
         .catch((error) => {
@@ -82,6 +91,7 @@ function Login() {
             setIsLoading(false); // Reset loading state
         });
     };
+    
 
     const goBack = () => {
         navigate(-1); 
